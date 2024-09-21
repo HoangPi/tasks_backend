@@ -17,3 +17,15 @@ services:
     command: npm run start:dev
     depends_on:
       - database
+  web-debug:
+    build: 
+      dockerfile: ./Dockerfile
+    env_file:
+      - ./.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/code:rw
+    command: sleep infinity
+    depends_on:
+      - database
