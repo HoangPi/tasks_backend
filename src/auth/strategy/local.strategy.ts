@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ResponseMessages } from 'src/constants/responseMessage';
@@ -21,7 +21,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
       const user = await this.authService.ValidateUser(username, password);
       if (!user) {
-        throw NotFoundException;
+        throw UnauthorizedException;
       }
       return {
         user,
@@ -30,7 +30,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       }
     }
     catch (err) {
-      throw new NotFoundException({message: ResponseMessages.USER_NOT_FOUND})
+      throw new UnauthorizedException({message: ResponseMessages.USER_NOT_FOUND})
     }
   }
 }
