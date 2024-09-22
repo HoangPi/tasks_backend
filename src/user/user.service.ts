@@ -13,7 +13,7 @@ export class UserService {
         private userRepos: Repository<User>
     ) { }
 
-    async createOne(createUser: CreateUserDto) {
+    async createOne(createUser: CreateUserDto): Promise<User> {
         const user = this.userRepos.create({
             username: createUser.username,
             password: await bcrypt.hash(createUser.password, 12),
@@ -30,5 +30,9 @@ export class UserService {
             }
             throw InternalServerErrorException
         }
+    }
+
+    async findOneByUnsername(username: string): Promise<User | null>{
+        return this.userRepos.findOne({where: {username: username}})
     }
 }
