@@ -3,12 +3,14 @@ import { AppService } from './app.service';
 import { CreateUserDto } from './user/dto/create-user.dto';
 import { UserService } from './user/user.service';
 import { LocalAuthGuard } from './auth/strategy/local-auth.guard';
+import { AuthService } from './auth/auth.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   @Get()
@@ -27,5 +29,16 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   login(@Request() req){
     return req.user
+  }
+
+  @Post('refresh')
+  @HttpCode(200)
+  refresh(@Body() body){
+    try{
+      return this.authService.RefreshUser(body.refresh)
+    }
+    catch(err){
+      return err
+    }
   }
 }
