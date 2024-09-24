@@ -49,7 +49,10 @@ export class ProjectService {
                     projectOwner: {
                         id: userid
                     }
-                }
+                },
+                relations: {
+                    members: true
+                },
             });
             return { projects: res };
         } catch {

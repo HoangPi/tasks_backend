@@ -33,7 +33,10 @@ export class UserService {
     }
 
     async findOneByUnsername(username: string): Promise<User | null> {
-        return this.userRepos.findOne({ where: { username: username } })
+        return this.userRepos.findOne({
+            where: { username: username },
+            select: ['address', 'id', 'name', 'password', 'phone', 'username']
+        })
     }
 
     async findUser(username: string, exclude: string[]) {
@@ -45,13 +48,13 @@ export class UserService {
         return this.userRepos.find({
             where: {
                 username: And(Like(`%${username}%`), Not(In(exclude)))
-              },
+            },
             take: 20
         })
     }
 
-    async findEmployee(ownerid: number){
-        try{
+    async findEmployee(ownerid: number) {
+        try {
             return await this.userRepos.find({
                 where: {
                     projects: {
@@ -63,7 +66,7 @@ export class UserService {
                 select: ['id', 'username', 'name']
             })
         }
-        catch(err){
+        catch (err) {
             console.error(err)
             throw InternalServerErrorException
         }
