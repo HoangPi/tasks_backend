@@ -17,4 +17,7 @@ export class Project{
 
     @ManyToMany(()=> User, (user) => user.projects)
     members: User[]
+
+    @Column({type: 'text', default: ''})
+    description: string
 }
