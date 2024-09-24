@@ -1,4 +1,4 @@
-import { Body, Controller, InternalServerErrorException, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Request, InternalServerErrorException, Post, UseGuards } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { JwtAuthGuard } from 'src/auth/strategy/jwt-auth.guard';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -9,6 +9,7 @@ export class ProjectController {
 
   @Post('create')
   @UseGuards(JwtAuthGuard)
+  @HttpCode(201)
   create(@Body() body: CreateProjectDto){
     try{
       return this.projectService.createOne(body)
@@ -16,5 +17,12 @@ export class ProjectController {
     catch(err){
       return InternalServerErrorException
     }
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  findSelfProjects(@Request() req){
+    return this.projectService.findSelfProjects(req.user.id)
   }
 }

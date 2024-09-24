@@ -19,4 +19,11 @@ export class UserController {
   findUserWithSimilarUsername(@Body() body: FindUserDto){
     return this.userService.findUser(body.username, body.exclude)
   }
+
+  @Get('/employee')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  findEmployee(@Request() req){
+    return this.userService.findEmployee(req.user.id)
+  }
 }

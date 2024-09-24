@@ -49,4 +49,23 @@ export class UserService {
             take: 20
         })
     }
+
+    async findEmployee(ownerid: number){
+        try{
+            return await this.userRepos.find({
+                where: {
+                    projects: {
+                        projectOwner: {
+                            id: ownerid
+                        }
+                    }
+                },
+                select: ['id', 'username', 'name']
+            })
+        }
+        catch(err){
+            console.error(err)
+            throw InternalServerErrorException
+        }
+    }
 }
