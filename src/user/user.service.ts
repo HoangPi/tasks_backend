@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
-import { Repository } from 'typeorm';
+import { And, In, Like, Not, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from "bcrypt"
 import { ResponseMessages } from 'src/constants/responseMessage';
@@ -25,14 +25,28 @@ export class UserService {
             return await this.userRepos.save(user)
         }
         catch (err) {
-            if(err.code === '23505'){
-                throw new ConflictException({message: ResponseMessages.DUPPLICATE_USERNAME})
+            if (err.code === '23505') {
+                throw new ConflictException({ message: ResponseMessages.DUPPLICATE_USERNAME })
             }
             throw InternalServerErrorException
         }
     }
 
-    async findOneByUnsername(username: string): Promise<User | null>{
-        return this.userRepos.findOne({where: {username: username}})
+    async findOneByUnsername(username: string): Promise<User | null> {
+        return this.userRepos.findOne({ where: { username: username } })
+    }
+
+    async findUser(username: string, exclude: string[]) {
+        this.userRepos.find({
+            where: {
+                username: Like(username)
+            }
+        })
+        return this.userRepos.find({
+            where: {
+                username: And(Like(`%${username}%`), Not(In(exclude)))
+              },
+            take: 20
+        })
     }
 }
