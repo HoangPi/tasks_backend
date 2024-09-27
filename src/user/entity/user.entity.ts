@@ -1,3 +1,4 @@
+import { UserStory } from "../../project/entities/user-story.entity";
 import { Project } from "../../project/entities/project.entity";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -26,4 +27,10 @@ export class User {
     @ManyToMany(()=>Project, (project) => project.members)
     @JoinTable()
     projects: Project[]
+
+    @OneToMany(()=>UserStory, (us)=> us.owner)
+    ownedUS: UserStory[]
+    
+    @OneToMany(()=>UserStory, (us) => us.assignedTo)
+    assignedUS: UserStory[]
 }
