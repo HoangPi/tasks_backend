@@ -4,6 +4,8 @@ import { Project } from './entities/project.entity';
 import { In, Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { User } from 'src/user/entity/user.entity';
+import { CreateSprintDto } from './dto/create-sprint.dto';
+import { Sprint } from './entities/sprint.entity';
 
 @Injectable()
 export class ProjectService {
@@ -12,7 +14,10 @@ export class ProjectService {
         private projectRepos: Repository<Project>,
 
         @InjectRepository(User)
-        private userRepos: Repository<User>
+        private userRepos: Repository<User>,
+
+        @InjectRepository(Sprint)
+        private sprintRepos: Repository<Sprint>
     ) { }
 
     async createOne(createProjectDto: CreateProjectDto) {
@@ -58,5 +63,17 @@ export class ProjectService {
         } catch {
             throw InternalServerErrorException;
         }
+    }
+
+    async createSprint(sprint: CreateSprintDto){
+        const newsprint = this.sprintRepos.create({
+            project: {
+                id: sprint.projectId
+            },
+            createdAt: sprint.createdAt,
+            endAt: sprint.endAt,
+            name: sprint.name
+        })
+        return await this.sprintRepos.save(newsprint)
     }
 }
