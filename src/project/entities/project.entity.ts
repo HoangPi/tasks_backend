@@ -1,6 +1,12 @@
 import { User } from "../../user/entity/user.entity";
 import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+export enum ProjectStatus{
+    ON_GOING= 'On going',
+    COMPLETED= 'Completed',
+    ABORTED= 'Aborted'
+}
+
 @Entity()
 export class Project{
     @PrimaryGeneratedColumn()
@@ -20,4 +26,7 @@ export class Project{
 
     @Column({type: 'text', default: ''})
     description: string
+
+    @Column({type: 'enum', enum: ProjectStatus, default: ProjectStatus.ON_GOING})
+    status: ProjectStatus
 }
