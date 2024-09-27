@@ -20,15 +20,18 @@ export class SprintSubscriber implements EntitySubscriberInterface<Sprint> {
             where: [
                 {
                     createdAt: LessThanOrEqual(event.entity.createdAt),
-                    endAt: MoreThanOrEqual(event.entity.createdAt)
+                    endAt: MoreThanOrEqual(event.entity.createdAt),
+                    project: event.entity.project
                 },
                 {
                     createdAt: LessThanOrEqual(event.entity.endAt),
-                    endAt: MoreThanOrEqual(event.entity.endAt)
+                    endAt: MoreThanOrEqual(event.entity.endAt),
+                    project: event.entity.project
                 },
                 {
                     createdAt: MoreThanOrEqual(event.entity.createdAt),
-                    endAt: LessThanOrEqual(event.entity.endAt)
+                    endAt: LessThanOrEqual(event.entity.endAt),
+                    project: event.entity.project
                 }
             ]
         })

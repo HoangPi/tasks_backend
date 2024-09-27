@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
 import { In, Repository } from 'typeorm';
@@ -65,7 +65,17 @@ export class ProjectService {
         }
     }
 
-    async createSprint(sprint: CreateSprintDto){
+    async createSprint(sprint: CreateSprintDto, userid: number){
+        if(!(await this.projectRepos.exists({
+            where: {
+                projectOwner: {
+                    id: userid
+                },
+                id: sprint.projectId
+            }
+        }))){
+            throw new HttpException("Forbidden", HttpStatus.FORBIDDEN)
+        }
         const newsprint = this.sprintRepos.create({
             project: {
                 id: sprint.projectId
@@ -74,6 +84,12 @@ export class ProjectService {
             endAt: sprint.endAt,
             name: sprint.name
         })
-        return await this.sprintRepos.save(newsprint)
+        try{
+            const s = await this.sprintRepos.save(newsprint)
+            return s
+        }
+        catch(err){
+            throw err
+        }
     }
 }
